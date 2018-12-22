@@ -23,9 +23,15 @@ function Copy-FilesNotEquals {
         {
             if (Test-Path -Path $currentOutPath -PathType Any)
             {
-                $currentInPathHash = Get-FileHash -Path $files_to_copy[$i].FullName -Algorithm MD5
-                $currentOutPathHash = Get-FileHash -Path $currentOutPath -Algorithm MD5
-                if ($currentInPathHash.Hash -ne $currentOutPathHash.Hash)
+                #Hash option: (use .Hash when comparing)
+                #$currentInPathHash = Get-FileHash -Path $files_to_copy[$i].FullName -Algorithm MD5
+                #$currentOutPathHash = Get-FileHash -Path $currentOutPath -Algorithm MD5
+                
+                #LastWriteTime option: (use .LastWriteTime when comparing)
+                $currentInPathFile = Get-Item -Path $files_to_copy[$i].FullName
+                $currentOutPathFile = Get-Item -Path $currentOutPath
+
+                if ($currentInPathFile.LastWriteTime -ne $currentOutPathFile.LastWriteTime)
                 {
                     Copy-Item -Path $files_to_copy[$i].FullName -Destination $currentOutPath -Force | Out-Null
                 }
